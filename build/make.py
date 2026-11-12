@@ -1,0 +1,511 @@
+# Builds the Tea Biscuit site. Run from anywhere: python3 build/make.py
+# Writes ../index.html (the live page) and build/out/mock/index.html (same page, no network, for mock-ups).
+import re,sys,os
+ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT=os.path.join(ROOT,'build','out'); os.makedirs(os.path.join(OUT,'mock'),exist_ok=True)
+mark=open(os.path.join(ROOT,'favicon.svg')).read().strip()
+inner=re.sub(r'^<svg[^>]*>|</svg>$','',mark).replace('r="48" fill="#1F5C58"','r="48" fill="#17443F"',1)
+MARK=f'<svg class="mark" viewBox="0 0 100 100" aria-hidden="true">{inner}</svg>'
+KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBob3BpenRucG9ieXdqbWlmd3FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzNTI2MjIsImV4cCI6MjEwOTkyODYyMn0.EGSRwde-prckfG4Zct608EocCTHv1jP3a97DDc41-LQ"
+
+HEAD_SITE='''<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Tea Biscuit turns each doctor visit into a clear plan families can finish. Built by a family physician in Ottawa.">
+<meta property="og:title" content="Tea Biscuit">
+<meta property="og:description" content="The doctor's plan done, with time for tea.">
+<meta property="og:image" content="https://teabiscuit.ai/images/visit.jpg">
+<meta property="og:url" content="https://teabiscuit.ai/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#17443F">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<title>Tea Biscuit: the doctor's plan done, with time for tea</title>'''
+HEAD_MOCK='<title>Tea Biscuit website mock-up</title>'
+
+SEND_SITE='''      btn.disabled = true; say('Sending…', '');
+      var body = { email: email, first_name: f.first_name.value.trim() || null, role: role, fsa: fsa || null, consent: true,
+                   organization_name: role === 'organization' ? (f.organization_name.value.trim() || null) : null };
+      fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY, Prefer: 'return=minimal' }, body: JSON.stringify(body) })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          thanks(role === 'organization' ? 'Thank you. We will email you to set up a call.' : 'Thank you. You are on the list. We will be in touch.');
+        })
+        .catch(function () { btn.disabled = false; say('That did not go through. Please try again, or email jason@teabiscuit.ai.', 'err'); });'''
+SEND_MOCK='''      thanks((role === 'organization' ? 'Thank you. We will email you to set up a call.' : 'Thank you. You are on the list. We will be in touch.') + ' (Mock-up: nothing was sent.)');'''
+
+PAGE=r'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+__HEAD__
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Fraunces:opsz,wght,SOFT@9..144,400..700,100&display=swap">
+<style>
+/* Layout: two full-screen photo chapters. 1 "The visit": the photo, the brand bar, and a working record screen on the phone. 2 "The plan": the kitchen photo stays still while a column of text cards scrolls over it. Single look by choice (brand: dark mode later). */
+:root {
+  --cream: #FBF6EC; --biscuit: #E9CF9F; --tea: #3B2A1E; --teal: #1F5C58; --teal-deep: #17443F;
+  --toast: #D9A441; --grey: #6B5B4E; --green: #2E6B3A; --attn: #B5462E; --line: #E4D6BC; --mist: #DCE9E4; --rec: #C8452F;
+  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #1B1512; color: var(--tea); font-family: var(--body); font-size: 18px; line-height: 1.55; }
+h1, h2 { font-family: var(--display); font-variation-settings: "SOFT" 100; font-weight: 600; text-wrap: balance; line-height: 1.12; margin: 0; letter-spacing: -0.015em; }
+
+/* brand and chapter bar */
+.bar { position: fixed; z-index: 30; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px clamp(16px, 3vw, 36px) 30px; color: var(--cream); background: linear-gradient(to bottom, rgba(18,48,45,.88), rgba(18,48,45,.55) 55%, rgba(18,48,45,0)); pointer-events: none; }
+.bar > * { pointer-events: auto; }
+.bar { transition: background-color .25s ease, padding .25s ease; }
+.bar.solid { background: var(--teal-deep); padding-bottom: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.brand .mark { width: 44px; height: 44px; flex: none; }
+.brand .bt { display: grid; gap: 3px; }
+.brand .bn { font-family: var(--display); font-variation-settings: "SOFT" 100; font-weight: 600; font-size: 25px; letter-spacing: -0.015em; line-height: 1; }
+.brand .tg { font-size: 12.5px; font-weight: 600; line-height: 1.2; color: var(--biscuit); white-space: nowrap; }
+.chapters { display: flex; align-items: center; gap: 4px; font-size: 16px; font-weight: 600; }
+.chapters a { color: inherit; text-decoration: none; padding: 7px 12px; border-radius: 999px; }
+.chapters a:hover { background: rgba(251,246,236,.16); }
+.chapters a.cta, .chapters a.org { border: 1.5px solid var(--cream); min-width: 176px; text-align: center; }
+.chapters a.cta { background: var(--cream); color: var(--teal-deep); }
+.chapters a.org { margin-left: 6px; }
+.chapters a.org:hover { background: rgba(251,246,236,.16); }
+.chapters a, .brand .bn { white-space: nowrap; }
+@media (max-width: 720px) {
+  .bar { align-items: flex-start; padding-top: 12px; }
+  .brand { padding-top: 2px; }
+  .brand .mark { width: 34px; height: 34px; }
+  .brand .bn { font-size: 21px; }
+  .brand .tg { font-size: 10.5px; white-space: normal; max-width: 128px; }
+  .chapters { flex-direction: column; align-items: stretch; gap: 6px; font-size: 14px; }
+  .chapters a { padding: 5px 12px; }
+  .chapters a.cta, .chapters a.org { min-width: 0; margin-left: 0; }
+  .chapters a:not(.cta):not(.org) { display: none; }
+  .chapters a.org { background: rgba(18,48,45,.5); }
+}
+a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline-offset: 3px; }
+
+/* photo scenes: the photo always covers the screen; the live phone screen is placed in % of the photo, so it stays lined up */
+.scene { position: relative; height: 100vh; height: 100svh; min-height: 540px; overflow: hidden; background: #2A211B; }
+.cover { position: absolute; left: 50%; top: 50%; width: max(100vw, calc(100svh * var(--r))); height: max(100svh, calc(100vw / var(--r))); min-height: 540px; min-width: calc(540px * var(--r)); transform: translate(calc(var(--fx) * -1), calc(var(--fy) * -1)); }
+.cover img { display: block; width: 100%; height: 100%; }
+#visit .cover { --r: 1.6258; --fx: 50%; --fy: 50%; }
+#plan .cover { --r: 1.8333; --fx: 50%; --fy: 50%; }
+@media (orientation: portrait) {
+  #visit .cover { --fx: 51.3%; --fy: 52.5%; width: calc(100svh * var(--r) * 1.12); height: calc(100svh * 1.12); }
+  #visit .forwho { font-size: 10.5px; letter-spacing: .05em; padding: 5px 11px; transform: translate(-50%, calc(-100% - 8px)); }
+  #visit .lead .who { font-size: 11px; letter-spacing: .05em; white-space: nowrap; margin-bottom: 4px; }
+  #visit .lead .sub { display: none; }
+  #visit .lead h1 { font-size: clamp(24px, 6.6vw, 36px); }
+  #visit .lead { bottom: 12px; }
+  .above { font-size: 11px !important; }
+  #plan .cover { --fx: 49.7%; --fy: 42%; width: calc(100svh * var(--r) * 1.3); height: calc(100svh * 1.3); }
+}
+.live { position: absolute; overflow: hidden; background: #F7F0E1; }
+#visit .live { left: 43.42%; top: 23.85%; width: 15.84%; height: 54.3%; border-radius: 11.4% / 5.4%; }
+#plan .live { left: 42.55%; top: 18.4%; width: 14.3%; height: 57.9%; border-radius: 9.5% / 4.2%; -webkit-mask-image: radial-gradient(ellipse 10.5% 5.6% at 64.5% 100.6%, transparent 97%, #000 100%); mask-image: radial-gradient(ellipse 10.5% 5.6% at 64.5% 100.6%, transparent 97%, #000 100%); }
+.design { position: absolute; left: 0; top: 0; width: 238px; transform-origin: 0 0; color: var(--tea); font-size: 14px; line-height: 1.35; }
+#visit .design { height: 506px; } #plan .design { height: 527px; }
+.island { position: absolute; top: 10px; left: 50%; width: 64px; height: 18px; margin-left: -32px; border-radius: 10px; background: #14100E; z-index: 2; }
+.notch { position: absolute; top: -1px; left: 50%; width: 126px; height: 20px; margin-left: -63px; border-radius: 0 0 13px 13px; background: #14100E; z-index: 2; }
+.st { position: absolute; inset: 0; padding: 44px 16px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 9px; opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility 0s linear .7s; }
+.phone1[data-state="1"] .s1, .phone1[data-state="3"] .s3 { opacity: 1; visibility: visible; transition: opacity .7s ease .15s, visibility 0s; }
+.hello { font-family: var(--display); font-variation-settings: "SOFT" 100; font-weight: 600; font-size: 22px; line-height: 1.15; }
+.when { color: var(--grey); font-size: 13px; }
+.grow { flex: 1; display: grid; place-items: center; width: 100%; }
+.rec { position: relative; width: 128px; height: 128px; border-radius: 50%; border: 6px solid #fff; background: var(--rec); color: #fff; cursor: pointer; display: grid; place-items: center; box-shadow: 0 0 0 3px var(--rec), 0 12px 24px rgba(200,69,47,.38); font: inherit; padding: 0; }
+.rec svg { width: 52px; height: 52px; }
+.rec::after { content: ""; position: absolute; inset: -14px; border-radius: 50%; border: 3px solid var(--rec); opacity: 0; }
+.big { font-weight: 700; font-size: 17px; }
+.small { font-size: 12.5px; color: var(--grey); }
+.livedot { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; color: var(--rec); }
+.livedot i { width: 10px; height: 10px; border-radius: 50%; background: var(--rec); }
+.timer { font-family: var(--display); font-size: 40px; font-weight: 600; line-height: 1; }
+.bars { display: flex; gap: 5px; align-items: center; height: 54px; }
+.bars span { width: 6px; height: 14px; border-radius: 3px; background: var(--teal); }
+.stop { width: 78px; height: 78px; border-radius: 50%; border: 5px solid var(--rec); background: #fff; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.stop b { width: 26px; height: 26px; border-radius: 6px; background: var(--rec); display: block; }
+.s3 { align-items: stretch; text-align: left; gap: 7px; }
+.s3 .hello { font-size: 19px; text-align: center; flex: 1; display: grid; place-items: center; }
+.s3 .grow { flex: none; padding: 4px 0 26px; }
+.row { display: grid; gap: 1px; padding: 7px 0; border-top: 1.5px solid var(--line); font-size: 13px; }
+.row b { font-size: 13.5px; } .row span { color: var(--grey); }
+.next { margin-top: auto; font: inherit; font-weight: 700; font-size: 13.5px; color: #fff; background: var(--teal); border: 0; border-radius: 10px; padding: 10px; cursor: pointer; }
+.again { font: inherit; font-weight: 600; font-size: 12px; color: var(--grey); background: none; border: 0; text-decoration: underline; cursor: pointer; align-self: center; padding: 2px; }
+/* plan phone (Sam's view) */
+.appbar { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 26px 0 8px; background: #EFE4CC; font-family: var(--display); font-variation-settings: "SOFT" 100; font-weight: 600; font-size: 15px; }
+.appbar .mark { width: 18px; height: 18px; }
+.plan { padding: 12px 14px; display: grid; gap: 8px; }
+.plan .hello { font-size: 20px; }
+.sec { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); margin-top: 4px; }
+.todo { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; padding: 7px 8px 7px 10px; }
+.todo div { display: grid; gap: 1px; }
+.todo strong { font-size: 13px; line-height: 1.25; } .todo span { font-size: 11.5px; color: var(--grey); line-height: 1.3; }
+.act { font: inherit; font-size: 11.5px; font-weight: 700; color: #fff; background: var(--teal); border: 0; border-radius: 999px; padding: 6px 10px; cursor: pointer; white-space: nowrap; }
+.act.is-done { background: #fff; color: var(--green); box-shadow: inset 0 0 0 1.5px var(--green); cursor: default; }
+.did { display: grid; gap: 3px; font-size: 12px; color: var(--tea); line-height: 1.3; }
+.detail { gap: 7px; }
+.detail .hello { font-size: 18px; }
+.backlink { font: inherit; font-size: 12px; font-weight: 700; color: var(--teal); background: none; border: 0; padding: 0; text-align: left; cursor: pointer; justify-self: start; }
+.why { font-size: 12px; line-height: 1.35; color: var(--tea); }
+.prov { display: grid; gap: 3px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; padding: 9px 10px; font-size: 12px; line-height: 1.35; }
+.prov strong { font-size: 13.5px; } .prov .tel { font-weight: 700; color: var(--teal); font-size: 13.5px; }
+.near { justify-self: start; font-size: 10.5px; font-weight: 700; background: var(--biscuit); border-radius: 999px; padding: 1px 8px; }
+.verified { font-size: 11px; color: var(--grey); }
+.detail .next { margin-top: 2px; }
+.ready { width: 96px; height: 96px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; }
+.ready svg { width: 52px; height: 52px; }
+.moreline { font-size: 12px; color: var(--grey); text-align: center; }
+
+/* chapter 1 words */
+.scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 56%; background: linear-gradient(to top, rgba(18,48,45,.9), rgba(18,48,45,.5) 45%, rgba(18,48,45,0)); pointer-events: none; }
+.lead { position: absolute; z-index: 5; left: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); bottom: clamp(18px, 4vh, 40px); display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; color: var(--cream); pointer-events: none; }
+.lead h1 { font-size: clamp(28px, 4.4vw, 52px); max-width: 12em; }
+.lead .who { font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--biscuit); margin: 0 0 8px; }
+.lead .sub { font-size: 18px; line-height: 1.45; max-width: 31em; margin: 10px 0 0; color: var(--mist); }
+.lead .try { color: var(--biscuit); font-weight: 600; white-space: nowrap; }
+.forwho { position: absolute; z-index: 3; left: 51.34%; top: 23.85%; transform: translate(-50%, calc(-100% - 14px)); margin: 0; white-space: nowrap; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); background: rgba(18,48,45,.84); padding: 7px 16px; border-radius: 999px; }
+.above { position: absolute; z-index: 2; left: 49.7%; top: 16.6%; transform: translate(-50%, calc(-100% - 7px)); margin: 0; white-space: nowrap; font-size: 12.5px; font-weight: 600; letter-spacing: .04em; color: rgba(251,246,236,.82); text-shadow: 0 1px 6px rgba(0,0,0,.55); }
+#visit .above { left: 51.34%; top: 22.5%; }
+.whose { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); }
+.lead a { pointer-events: auto; color: var(--cream); font-weight: 600; text-decoration: none; border: 2px solid rgba(251,246,236,.6); border-radius: 999px; padding: 8px 16px; white-space: nowrap; }
+.lead a:hover { background: rgba(251,246,236,.16); }
+@media (max-width: 720px) { .lead { flex-direction: column; align-items: flex-start; gap: 10px; } }
+@media (orientation: portrait) and (max-height: 680px) { #visit .cover { --fy: 51.5%; } #visit .lead { gap: 7px; } #visit .lead h1 { font-size: 23px; } #visit .lead a { padding: 5px 14px; font-size: 16px; } }
+
+/* chapter 2: still photo, scrolling cards */
+.story { position: relative; }
+.story .scene { position: sticky; top: 0; }
+.cards { position: relative; z-index: 6; margin-top: -100vh; margin-top: -100svh; padding: 62vh clamp(16px, 3vw, 40px) 12vh; width: 100%; display: grid; gap: 22px; justify-items: start; pointer-events: none; }
+.card { pointer-events: auto; width: clamp(300px, 32vw, 470px); background: var(--cream); border-radius: 18px; padding: 26px; display: grid; gap: 12px; box-shadow: 0 18px 44px rgba(0,0,0,.28); scroll-margin-top: 84px; }
+.card.dark { background: var(--teal-deep); color: var(--cream); }
+.card p { margin: 0; }
+.card h2 { font-size: 27px; }
+.card.first h2 { font-size: clamp(30px, 3vw, 38px); }
+.eyebrow { font-size: 13.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); margin: 0; }
+.dark .eyebrow { color: var(--biscuit); }
+.founder { display: flex; gap: 10px; align-items: baseline; font-size: 16.5px; color: var(--teal); font-weight: 600; }
+.founder::before { content: ""; width: 20px; height: 2px; background: var(--toast); flex: none; transform: translateY(-5px); }
+ul.ticks { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+ul.ticks li { display: grid; grid-template-columns: 24px 1fr; gap: 6px; align-items: start; }
+ul.ticks li::before { content: ""; width: 13px; height: 13px; margin-top: 8px; border-radius: 4px; background: var(--toast); transform: rotate(-10deg); }
+.status { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 2px solid currentColor; background: var(--cream); }
+.chip.done { color: var(--green); } .chip.wait { color: var(--grey); } .chip.stuck { color: var(--attn); }
+ol.steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; counter-reset: s; }
+ol.steps li { display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: start; counter-increment: s; }
+ol.steps li::before { content: counter(s); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-weight: 600; background: var(--teal); color: var(--cream); }
+.dark ol.steps li::before { background: var(--biscuit); color: var(--teal-deep); }
+@media (max-width: 820px) {
+  .cards { justify-items: center; gap: 46vh; padding-top: 78vh; }
+  .card { width: min(100%, 520px); scroll-margin-top: 108px; }
+}
+
+/* waiting list */
+.join form { display: grid; gap: 12px; }
+.row2 { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.join label { display: grid; gap: 4px; font-weight: 600; font-size: 16px; }
+.join label small { font-weight: 400; color: var(--grey); }
+.dark.join label small, .dark .fine { color: var(--mist); }
+.join input[type=text], .join input[type=email] { font: inherit; padding: 11px 12px; border-radius: 10px; border: 2px solid var(--line); background: #fff; color: var(--tea); width: 100%; }
+.join input:focus-visible { outline: 3px solid var(--toast); outline-offset: 1px; }
+.consent { display: grid !important; grid-template-columns: 24px 1fr; gap: 10px !important; align-items: start; font-weight: 400 !important; font-size: 15.5px !important; }
+.consent input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--teal); }
+button.send { font: inherit; font-weight: 700; cursor: pointer; border: 0; border-radius: 10px; padding: 13px 20px; background: var(--teal); color: #fff; justify-self: start; }
+.dark button.send { background: var(--cream); color: var(--teal-deep); }
+button.send[disabled] { opacity: .6; cursor: default; }
+.fine { font-size: 14.5px; color: var(--grey); }
+.fine summary { cursor: pointer; font-weight: 600; }
+.msg { font-weight: 600; } .msg.err { color: var(--attn); } .msg.ok { color: var(--green); }
+.dark .msg.ok { color: var(--biscuit); } .dark .msg.err { color: #FFC9BD; }
+.thanks { margin: 0; padding: 16px 18px; border-radius: 12px; background: #E6F0E7; color: var(--green); font-weight: 700; font-size: 19px; }
+.dark .thanks { background: var(--cream); color: var(--teal-deep); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.foot { font-size: 14.5px; color: var(--grey); gap: 4px; }
+.foot a { color: inherit; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .rec::after { animation: ring 2.2s ease-out infinite; }
+  @keyframes ring { 0% { transform: scale(.86); opacity: .7; } 100% { transform: scale(1.18); opacity: 0; } }
+  .livedot i { animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .phone1[data-state="2"] .bars span { animation: bar 1s ease-in-out infinite; }
+  .bars span:nth-child(2n) { animation-delay: .15s; } .bars span:nth-child(3n) { animation-delay: .35s; } .bars span:nth-child(5n) { animation-delay: .5s; }
+  @keyframes bar { 0%, 100% { height: 12px; } 50% { height: 46px; } }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="brand" href="#visit" data-go="visit" aria-label="Tea Biscuit, for families helping their aging parents. Back to the top.">__MARK__<span class="bt"><span class="bn">Tea Biscuit</span><span class="tg">For families helping their aging parents</span></span></a>
+  <nav class="chapters" aria-label="Chapters">
+    <a href="#visit" data-go="visit">The visit</a>
+    <a href="#plan" data-go="plan">The plan</a>
+    <a class="org" href="#organizations" data-go="organizations">For organizations</a>
+    <a class="cta" href="#join" data-go="join" aria-label="For caregivers: join the waiting list">For caregivers</a>
+  </nav>
+</header>
+
+<!-- CHAPTER 1: THE VISIT -->
+<section class="scene" id="visit">
+  <div class="cover">
+    <img src="images/visit.jpg" width="1234" height="759" alt="An older woman's hand holds a phone across the desk from her family doctor.">
+    <div class="scrim"></div>
+    <p class="above">Margaret's phone at her doctor's office</p>
+    <div class="live phone1" data-state="1" role="group" aria-label="Example of the Tea Biscuit record screen">
+      <div class="design">
+        <div class="island"></div>
+        <div class="st s1">
+          <div class="hello">Ready for your visit?</div>
+          <div class="when">Today, 2:00 PM<br>Dr. Patel, family doctor</div>
+          <div class="grow"><button class="rec" type="button" data-rec aria-label="Record the visit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3" fill="currentColor"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></button></div>
+          <div class="big">Record the visit</div>
+          <div class="small">Tea Biscuit will remember the plan for you and your loved ones.</div>
+        </div>
+        <div class="st s3">
+          <div class="hello">Your plan is ready</div>
+          <div class="grow"><div class="ready"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.500 4.500L19 7.500"/></svg></div></div>
+          <div class="when">Dr. Patel's visit</div>
+          <div class="big">6 things in the plan</div>
+          <div class="small">Tea Biscuit remembered it for you and your loved ones.</div>
+          <button class="next" type="button" data-go="plan" style="align-self:stretch">See the plan ↓</button>
+          <button class="again" type="button" data-again>Start again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lead">
+    <div>
+      <h1>The doctor's plan done, with time for tea.</h1>
+      <p class="sub">Your parent presses one button at the doctor's visit. You get a clear plan on your phone, and you finish it together. <span class="try">Try it: press the red button.</span></p>
+    </div>
+    <a href="#plan" data-go="plan">See the plan ↓</a>
+  </div>
+</section>
+
+<!-- CHAPTER 2: THE PLAN -->
+<section class="story" id="plan">
+  <div class="scene">
+    <div class="cover">
+      <img src="images/plan.jpg" width="1408" height="768" alt="At a kitchen counter, a son holds a phone showing his mother's plan, beside a kettle, two mugs and a plate of tea biscuits.">
+      <p class="above">Her son's phone at home</p>
+      <div class="live phone2" aria-label="Example of the plan, as the family sees it">
+        <div class="design">
+          <div class="notch"></div>
+          <div class="appbar">__MARK__Tea Biscuit</div>
+          <div class="plan" data-list>
+            <div class="hello">Margaret's plan</div>
+            <div class="when">Dr. Patel's visit</div>
+            <div class="sec">Next steps</div>
+            <div class="todo"><div><strong>Book an eye exam</strong><span>It has been more than two years.</span></div><button type="button" class="act" data-task="eye">Call</button></div>
+            <div class="todo"><div><strong>Get fasting blood work</strong><span>In the next two weeks.</span></div><button type="button" class="act" data-task="blood">Book online</button></div>
+            <div class="todo"><div><strong>Book a hearing test</strong><span>Before talking about hearing aids.</span></div><button type="button" class="act" data-task="hearing">Call</button></div>
+            <div class="sec">Done at the visit</div>
+            <div class="did"><span>✓ Flu shot given</span><span>✓ Blood pressure still high. Started Ramipril 10 mg by mouth, once a day.</span><span>✓ Memory clinic referral sent. They will call you.</span></div>
+          </div>
+          <div class="plan detail" data-detail hidden>
+            <button type="button" class="backlink" data-back>‹ Margaret's plan</button>
+            <div class="hello" data-d="title"></div>
+            <div class="why"><b>Why:</b> <span data-d="why"></span></div>
+            <div class="prov">
+              <span class="near" data-d="tag">Closest to Margaret</span>
+              <strong data-d="name"></strong>
+              <span data-d="addr"></span>
+              <span class="tel" data-d="tel"></span>
+              <span data-d="hours"></span>
+              <span data-d="extra"></span>
+            </div>
+            <div class="verified">Checked by a family physician. Up to date as of <span data-yday>yesterday</span>.</div>
+            <button type="button" class="next" data-mark></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <article class="card first">
+      <p class="eyebrow">For adult children and family caregivers</p>
+      <h2>Know what the doctor said, and get it done.</h2>
+      <p>Your parent presses one button at the doctor's visit. Tea Biscuit turns the visit into a clear plan on your phone, with the reason for each step. Then it helps you finish that plan in one sitting.</p>
+      <p class="founder">Built by a family physician, for families without a doctor in the family.</p>
+    </article>
+
+    <article class="card" id="families">
+      <h2>The visit is the easy part</h2>
+      <p>Afterwards there's a referral to chase, a new prescription, a test to book, and clinics that don't talk to each other. Most families don't have a doctor to ask.</p>
+    </article>
+
+    <article class="card">
+      <h2>What you get</h2>
+      <ul class="ticks">
+        <li><span>Your parent presses one button at the visit. Nobody has to take notes.</span></li>
+        <li><span>You both get a plan with the reason for each step, in plain words.</span></li>
+        <li><span>One sitting to make every call, with the numbers, scripts and forms ready.</span></li>
+        <li><span>Tell us what matters to you. We find the services that fit.</span></li>
+        <li><span>Your parent stays in charge. You help as much as they want.</span></li>
+        <li><span>You can see where each step stands:</span></li>
+      </ul>
+      <div class="status" aria-label="Status examples"><span class="chip done">✓ Done</span><span class="chip wait">◷ Waiting on clinic</span><span class="chip stuck">! Stuck</span></div>
+    </article>
+
+    <article class="card">
+      <h2>Why it's different</h2>
+      <ul class="ticks">
+        <li><span><strong>We get it done, not just tell you.</strong> Other apps stop at a summary. Tea Biscuit takes you through every call and form in one sitting, and shows you what's still waiting.</span></li>
+        <li><span><strong>Your data and your choices stay yours.</strong> We never sell your data, and no one pays us to send you to a service. You choose every provider.</span></li>
+        <li><span><strong>Built by a family physician</strong> who knows where plans fall through after the visit, and how to close those gaps.</span></li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><span>Set it up together with your parent, in about 15 minutes.</span></li>
+        <li><span>Press record at the next doctor visit.</span></li>
+        <li><span>Finish the plan in one sitting and see what's done.</span></li>
+      </ol>
+    </article>
+
+    <article class="card join" id="join" data-slot data-role="family"></article>
+
+    <article class="card dark join" id="organizations" data-slot data-role="organization"></article>
+
+    <footer class="card foot">
+      <span>Tea Biscuit is opening to its first families and organizations soon. It does not give medical advice and does not replace your doctor. The people and details shown are examples.</span>
+      <span>Ottawa, Ontario. A project by <a href="https://piezoelectric.ai/">Jason Trickovic, MD</a>. Contact: <a href="mailto:jason@teabiscuit.ai">jason@teabiscuit.ai</a></span>
+    </footer>
+  </div>
+</section>
+
+<template id="tpl-family">
+  <h2>Join the waiting list</h2>
+  <p>For families helping a parent or relative. Be one of the first to try Tea Biscuit.</p>
+</template>
+<template id="tpl-organization">
+  <p class="eyebrow">For organizations</p>
+  <h2>Make Tea Biscuit fit your organization</h2>
+  <p>Does your organization support older adults and their families? We can shape Tea Biscuit around your programs and the needs of the people you serve.</p>
+  <ol class="steps">
+    <li><span>Reach more families without adding staff.</span></li>
+    <li><span>Families finish the doctor's plan on their own. Your coaches see only the steps that are stuck.</span></li>
+    <li><span>No data sold, no referral fees, no steering. Privacy designed for Ontario rules.</span></li>
+  </ol>
+  <p><strong>Talk to us about a pilot.</strong> Leave your details and we will set up a 30-minute call.</p>
+</template>
+<template id="tpl-form">
+  <form novalidate>
+    <div class="row2">
+      <label>First name <input type="text" name="first_name" autocomplete="given-name" maxlength="80"></label>
+      <label>Email <input type="email" name="email" autocomplete="email" required maxlength="254"></label>
+    </div>
+    <label data-org hidden>Organization name <input type="text" name="organization_name" autocomplete="organization" maxlength="160"></label>
+    <label data-fsa>First 3 characters of your postal code <small>Optional. We will let you know when Tea Biscuit is available in your area.</small> <input type="text" name="fsa" maxlength="3" autocomplete="off" style="max-width:9em;text-transform:uppercase"></label>
+    <label class="hp" aria-hidden="true">Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+    <label class="consent"><input type="checkbox" name="consent" required> <span>Yes, Tea Biscuit can email me about the waiting list and early testing. I can ask to be removed at any time.</span></label>
+    <button class="send" type="submit">Join the waiting list</button>
+    <p class="msg" role="status" aria-live="polite" hidden></p>
+    <p class="fine">Please do not send health information. We never sell your data. Your details are stored in Canada.</p>
+    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and we use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. To see, change or remove your details, email jason@teabiscuit.ai.</span></details>
+  </form>
+</template>
+
+<script>
+(function () {
+  var API = 'https://phopiztnpobywjmifwqg.supabase.co/rest/v1/waitlist';
+  var KEY = '__KEY__'; // public, insert-only key
+
+  // chapter links scroll inside the page
+  function go(id) { var el = document.getElementById(id); if (el) el.scrollIntoView({ block: 'start' }); }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-go]'); if (!a) return;
+    e.preventDefault(); go(a.getAttribute('data-go'));
+  });
+  var first = (location.hash || '').replace('#', '');
+  if (first && document.getElementById(first)) setTimeout(function () { go(first); }, 60);
+
+  // once the reader scrolls into the text, the brand bar turns solid so the name and line stay readable
+  var bar = document.querySelector('.bar');
+  function solid() { bar.classList.toggle('solid', window.scrollY > window.innerHeight * 0.55); }
+  window.addEventListener('scroll', solid, { passive: true }); solid();
+
+  // keep each live phone screen the same size as the phone in its photo
+  function fit() {
+    document.querySelectorAll('.live').forEach(function (l) {
+      var d = l.querySelector('.design'); d.style.transform = 'scale(' + (l.clientWidth / 238) + ')';
+    });
+  }
+  window.addEventListener('resize', fit); fit();
+
+  // record screen: the red button fades to the finished plan
+  var ph = document.querySelector('.phone1');
+  ph.querySelector('[data-rec]').addEventListener('click', function () { ph.setAttribute('data-state', '3'); });
+  ph.querySelector('[data-again]').addEventListener('click', function () { ph.setAttribute('data-state', '1'); });
+
+  // plan phone: an action opens example details for that step; "mark" returns to the list with the step done
+  var TASKS = {
+    eye: { tag: 'Closest to Margaret', title: 'Book an eye exam', why: 'It has been more than two years. Eye exams are covered at her age.', name: 'Kettle Lane Eye Care', addr: '12 Kettle Lane, Ottawa', tel: 'Call 613-555-0142', hours: 'Mon to Fri, 9 am to 5 pm', extra: 'Bring her health card.', mark: 'I called and booked', done: 'Booked' },
+    blood: { tag: "Margaret's preferred lab", title: 'Get fasting blood work', why: 'To check cholesterol and blood sugar before the next visit. Follow the fasting rules on the lab form.', name: 'Saucer Street Community Lab', addr: '40 Saucer Street, Ottawa', tel: 'Book a time online', hours: 'Mon to Sat, 7 am to 3 pm', extra: 'Walk-in: yes. Bring the lab form.', mark: 'I booked a time', done: 'Booked' },
+    hearing: { tag: 'Closest to Margaret', title: 'Book a hearing test', why: 'Trouble following conversations. The test shows how much her hearing has changed, before talking about hearing aids.', name: 'Shortbread Hearing Clinic', addr: '7 Shortbread Road, Ottawa', tel: 'Call 613-555-0178', hours: 'Mon to Thu, 9 am to 4 pm', extra: 'No referral needed.', mark: 'I called and booked', done: 'Booked' }
+  };
+  // the "up to date" line always shows the day before today
+  (function () { var d = new Date(); d.setDate(d.getDate() - 1); var t; try { t = d.toLocaleDateString('en-CA', { month: 'long', day: 'numeric' }); } catch (e) { t = 'yesterday'; } document.querySelectorAll('[data-yday]').forEach(function (el) { el.textContent = t; }); })();
+  var p2 = document.querySelector('.phone2'), listEl = p2.querySelector('[data-list]'), det = p2.querySelector('[data-detail]'), cur;
+  p2.querySelectorAll('.act').forEach(function (b) {
+    b.addEventListener('click', function () {
+      cur = b; var t = TASKS[b.getAttribute('data-task')];
+      ['tag', 'title', 'why', 'name', 'addr', 'tel', 'hours', 'extra'].forEach(function (k) { det.querySelector('[data-d=' + k + ']').textContent = t[k]; });
+      det.querySelector('[data-mark]').textContent = t.mark;
+      listEl.hidden = true; det.hidden = false;
+    });
+  });
+  det.querySelector('[data-back]').addEventListener('click', function () { det.hidden = true; listEl.hidden = false; });
+  det.querySelector('[data-mark]').addEventListener('click', function () {
+    var t = TASKS[cur.getAttribute('data-task')];
+    cur.classList.add('is-done'); cur.textContent = '✓ ' + t.done; cur.disabled = true;
+    det.hidden = true; listEl.hidden = false;
+  });
+
+  // waiting list forms
+  document.querySelectorAll('[data-slot]').forEach(function (slot) {
+    var role = slot.getAttribute('data-role');
+    slot.appendChild(document.getElementById('tpl-' + role).content.cloneNode(true));
+    slot.appendChild(document.getElementById('tpl-form').content.cloneNode(true));
+    var form = slot.querySelector('form'), msg = slot.querySelector('.msg'), btn = slot.querySelector('button.send');
+    slot.querySelector('[data-org]').hidden = role !== 'organization';
+    slot.querySelector('[data-fsa]').hidden = role === 'organization';
+    if (role === 'organization') btn.textContent = 'Ask for a call';
+    function say(text, cls) { msg.hidden = false; msg.className = 'msg ' + cls; msg.textContent = text; }
+    function thanks(text) { form.hidden = true; var p = document.createElement('p'); p.className = 'thanks'; p.setAttribute('role', 'status'); p.textContent = text; slot.appendChild(p); }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = form.elements;
+      if (f.website.value) return; // bot trap
+      var email = f.email.value.trim(), fsa = f.fsa.value.trim().toUpperCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Please enter a valid email address.', 'err'); f.email.focus(); return; }
+      if (fsa && !/^[A-Z][0-9][A-Z]$/.test(fsa)) { say('The postal code part needs a letter, a number and a letter, such as A1A.', 'err'); f.fsa.focus(); return; }
+      if (!f.consent.checked) { say('Please tick the box so we can email you.', 'err'); f.consent.focus(); return; }
+__SEND__
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
+'''
+def build(kind):
+    s=PAGE.replace('__HEAD__',HEAD_SITE if kind=='site' else HEAD_MOCK).replace('__MARK__',MARK).replace('__KEY__',KEY if kind=='site' else 'mock')
+    s=s.replace('__SEND__',SEND_SITE if kind=='site' else SEND_MOCK)
+    return s
+open(os.path.join(ROOT,'index.html'),'w').write(build('site'))
+open(os.path.join(OUT,'mock','index.html'),'w').write(build('mock'))
+print('built')
