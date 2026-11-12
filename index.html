@@ -65,7 +65,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 #visit .cover { --r: 1.6258; --fx: 50%; --fy: 50%; }
 #plan .cover { --r: 1.8333; --fx: 50%; --fy: 50%; }
 @media (orientation: portrait) {
-  #visit .cover { --fx: 51.3%; --fy: 55%; width: calc(100svh * var(--r) * 1.12); height: calc(100svh * 1.12); }
+  #visit .cover { --fx: 51.3%; --fy: 52%; width: calc(100svh * var(--r) * 1.12); height: calc(100svh * 1.12); }
+  #visit .forwho { font-size: 10.5px; letter-spacing: .05em; padding: 5px 11px; transform: translate(-50%, calc(-100% - 8px)); }
   #visit .lead .who { font-size: 11px; letter-spacing: .05em; white-space: nowrap; margin-bottom: 4px; }
   #visit .lead .sub { display: none; }
   #visit .lead h1 { font-size: clamp(24px, 6.6vw, 36px); }
@@ -134,11 +135,12 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 .lead .who { font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--biscuit); margin: 0 0 8px; }
 .lead .sub { font-size: 18px; line-height: 1.45; max-width: 31em; margin: 10px 0 0; color: var(--mist); }
 .lead .try { color: var(--biscuit); font-weight: 600; white-space: nowrap; }
+.forwho { position: absolute; z-index: 3; left: 51.34%; top: 23.85%; transform: translate(-50%, calc(-100% - 14px)); margin: 0; white-space: nowrap; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); background: rgba(18,48,45,.84); padding: 7px 16px; border-radius: 999px; }
 .whose { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); }
 .lead a { pointer-events: auto; color: var(--cream); font-weight: 600; text-decoration: none; border: 2px solid rgba(251,246,236,.6); border-radius: 999px; padding: 8px 16px; white-space: nowrap; }
 .lead a:hover { background: rgba(251,246,236,.16); }
 @media (max-width: 720px) { .lead { flex-direction: column; align-items: flex-start; gap: 10px; } }
-@media (orientation: portrait) and (max-height: 680px) { #visit .lead { gap: 7px; } #visit .lead h1 { font-size: 23px; } #visit .lead a { padding: 5px 14px; font-size: 16px; } }
+@media (orientation: portrait) and (max-height: 680px) { #visit .cover { --fy: 50%; } #visit .lead { gap: 7px; } #visit .lead h1 { font-size: 23px; } #visit .lead a { padding: 5px 14px; font-size: 16px; } }
 
 /* chapter 2: still photo, scrolling cards */
 .story { position: relative; }
@@ -242,10 +244,10 @@ button.send[disabled] { opacity: .6; cursor: default; }
         </div>
       </div>
     </div>
+    <p class="forwho">For families helping an aging parent</p>
   </div>
   <div class="lead">
     <div>
-      <p class="who">For families helping an aging parent</p>
       <h1>The doctor's plan done, with time for tea.</h1>
       <p class="sub">Your parent presses one button at the doctor's visit. You get a clear plan on your phone, and you finish it together. <span class="try">Try it: press the red button.</span></p>
     </div>
@@ -314,7 +316,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
         <li><span>You both get a plan with the reason for each step, in plain words.</span></li>
         <li><span>One sitting to make every call, with the numbers, scripts and forms ready.</span></li>
         <li><span>Tell us what matters to you. We find the services that fit.</span></li>
-        <li><span>You and your parent choose who does what. Your parent stays in charge.</span></li>
+        <li><span>Your parent stays in charge. You help as much as they want.</span></li>
         <li><span>You can see where each step stands:</span></li>
       </ul>
       <div class="status" aria-label="Status examples"><span class="chip done">✓ Done</span><span class="chip wait">◷ Waiting on clinic</span><span class="chip stuck">! Stuck</span></div>
