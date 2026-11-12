@@ -38,19 +38,24 @@ h1, h2 { font-family: var(--display); font-variation-settings: "SOFT" 100; font-
 /* brand and chapter bar */
 .bar { position: fixed; z-index: 30; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px clamp(16px, 3vw, 36px) 30px; color: var(--cream); background: linear-gradient(to bottom, rgba(18,48,45,.88), rgba(18,48,45,.55) 55%, rgba(18,48,45,0)); pointer-events: none; }
 .bar > * { pointer-events: auto; }
+.bar { transition: background-color .25s ease, padding .25s ease; }
+.bar.solid { background: var(--teal-deep); padding-bottom: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
-.brand .mark { width: 40px; height: 40px; flex: none; }
-.brand span { font-family: var(--display); font-variation-settings: "SOFT" 100; font-weight: 600; font-size: 25px; letter-spacing: -0.015em; line-height: 1; }
+.brand .mark { width: 44px; height: 44px; flex: none; }
+.brand .bt { display: grid; gap: 3px; }
+.brand .bn { font-family: var(--display); font-variation-settings: "SOFT" 100; font-weight: 600; font-size: 25px; letter-spacing: -0.015em; line-height: 1; }
+.brand .tg { font-size: 12.5px; font-weight: 600; line-height: 1.2; color: var(--biscuit); white-space: nowrap; }
 .chapters { display: flex; align-items: center; gap: 4px; font-size: 16px; font-weight: 600; }
 .chapters a { color: inherit; text-decoration: none; padding: 7px 12px; border-radius: 999px; }
 .chapters a:hover { background: rgba(251,246,236,.16); }
 .chapters a.cta { background: var(--cream); color: var(--teal-deep); }
-.chapters a, .brand span { white-space: nowrap; }
+.chapters a, .brand .bn { white-space: nowrap; }
 @media (max-width: 720px) {
   .bar { align-items: flex-start; padding-top: 12px; }
   .brand { padding-top: 2px; }
   .brand .mark { width: 34px; height: 34px; }
-  .brand span { font-size: 21px; }
+  .brand .bn { font-size: 21px; }
+  .brand .tg { font-size: 10.5px; white-space: normal; max-width: 128px; }
   .chapters { flex-direction: column; align-items: flex-end; gap: 6px; font-size: 14px; }
   .chapters a { padding: 6px 12px; }
   .chapters a:not(.cta):not(.org) { display: none; }
@@ -65,7 +70,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 #visit .cover { --r: 1.6258; --fx: 50%; --fy: 50%; }
 #plan .cover { --r: 1.8333; --fx: 50%; --fy: 50%; }
 @media (orientation: portrait) {
-  #visit .cover { --fx: 51.3%; --fy: 52%; width: calc(100svh * var(--r) * 1.12); height: calc(100svh * 1.12); }
+  #visit .cover { --fx: 51.3%; --fy: 55%; width: calc(100svh * var(--r) * 1.12); height: calc(100svh * 1.12); }
   #visit .forwho { font-size: 10.5px; letter-spacing: .05em; padding: 5px 11px; transform: translate(-50%, calc(-100% - 8px)); }
   #visit .lead .who { font-size: 11px; letter-spacing: .05em; white-space: nowrap; margin-bottom: 4px; }
   #visit .lead .sub { display: none; }
@@ -140,7 +145,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 .lead a { pointer-events: auto; color: var(--cream); font-weight: 600; text-decoration: none; border: 2px solid rgba(251,246,236,.6); border-radius: 999px; padding: 8px 16px; white-space: nowrap; }
 .lead a:hover { background: rgba(251,246,236,.16); }
 @media (max-width: 720px) { .lead { flex-direction: column; align-items: flex-start; gap: 10px; } }
-@media (orientation: portrait) and (max-height: 680px) { #visit .cover { --fy: 50%; } #visit .lead { gap: 7px; } #visit .lead h1 { font-size: 23px; } #visit .lead a { padding: 5px 14px; font-size: 16px; } }
+@media (orientation: portrait) and (max-height: 680px) { #visit .lead { gap: 7px; } #visit .lead h1 { font-size: 23px; } #visit .lead a { padding: 5px 14px; font-size: 16px; } }
 
 /* chapter 2: still photo, scrolling cards */
 .story { position: relative; }
@@ -167,7 +172,7 @@ ol.steps li::before { content: counter(s); width: 34px; height: 34px; border-rad
 .dark ol.steps li::before { background: var(--biscuit); color: var(--teal-deep); }
 @media (max-width: 820px) {
   .cards { justify-items: center; gap: 46vh; padding-top: 78vh; }
-  .card { width: min(100%, 520px); }
+  .card { width: min(100%, 520px); scroll-margin-top: 108px; }
 }
 
 /* waiting list */
@@ -208,7 +213,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
 <body>
 
 <header class="bar">
-  <a class="brand" href="#visit" data-go="visit" aria-label="Tea Biscuit, back to the top"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#17443F"/><circle cx="50" cy="50" r="39" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="2"/><rect x="70" y="41.4" width="19.500" height="7.2" rx="3.6" fill="#FBF6EC" transform="rotate(-38 50 45)"/><circle cx="50" cy="45" r="26" fill="#FBF6EC"/><circle cx="50" cy="45" r="19.6" fill="#A46A3A"/><path d="M36.500 42a14.500 14.500 0 0 1 11-10.500" fill="none" stroke="#C99466" stroke-width="3" stroke-linecap="round"/><g transform="rotate(-12 43.5 73.5)"><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#E9CF9F"/><circle cx="29.36" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="29.36" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="27.66" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="35.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="43.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="51.50" cy="73.5" r="1.6" fill="#143C38"/></g></svg><span>Tea Biscuit</span></a>
+  <a class="brand" href="#visit" data-go="visit" aria-label="Tea Biscuit, for families helping their aging parents. Back to the top."><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#17443F"/><circle cx="50" cy="50" r="39" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="2"/><rect x="70" y="41.4" width="19.500" height="7.2" rx="3.6" fill="#FBF6EC" transform="rotate(-38 50 45)"/><circle cx="50" cy="45" r="26" fill="#FBF6EC"/><circle cx="50" cy="45" r="19.6" fill="#A46A3A"/><path d="M36.500 42a14.500 14.500 0 0 1 11-10.500" fill="none" stroke="#C99466" stroke-width="3" stroke-linecap="round"/><g transform="rotate(-12 43.5 73.5)"><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#E9CF9F"/><circle cx="29.36" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="29.36" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="27.66" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="35.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="43.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="51.50" cy="73.5" r="1.6" fill="#143C38"/></g></svg><span class="bt"><span class="bn">Tea Biscuit</span><span class="tg">For families helping their aging parents</span></span></a>
   <nav class="chapters" aria-label="Chapters">
     <a href="#visit" data-go="visit">The visit</a>
     <a href="#plan" data-go="plan">The plan</a>
@@ -244,7 +249,6 @@ button.send[disabled] { opacity: .6; cursor: default; }
         </div>
       </div>
     </div>
-    <p class="forwho">For families helping an aging parent</p>
   </div>
   <div class="lead">
     <div>
@@ -396,6 +400,11 @@ button.send[disabled] { opacity: .6; cursor: default; }
   });
   var first = (location.hash || '').replace('#', '');
   if (first && document.getElementById(first)) setTimeout(function () { go(first); }, 60);
+
+  // once the reader scrolls into the text, the brand bar turns solid so the name and line stay readable
+  var bar = document.querySelector('.bar');
+  function solid() { bar.classList.toggle('solid', window.scrollY > window.innerHeight * 0.55); }
+  window.addEventListener('scroll', solid, { passive: true }); solid();
 
   // keep each live phone screen the same size as the phone in its photo
   function fit() {
