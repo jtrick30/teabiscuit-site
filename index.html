@@ -42,7 +42,17 @@ h1, h2 { font-family: var(--display); font-variation-settings: "SOFT" 100; font-
 .chapters a { color: inherit; text-decoration: none; padding: 7px 12px; border-radius: 999px; }
 .chapters a:hover { background: rgba(251,246,236,.16); }
 .chapters a.cta { background: var(--cream); color: var(--teal-deep); }
-@media (max-width: 720px) { .chapters a:not(.cta) { display: none; } }
+.chapters a, .brand span { white-space: nowrap; }
+@media (max-width: 720px) {
+  .bar { align-items: flex-start; padding-top: 12px; }
+  .brand { padding-top: 2px; }
+  .brand .mark { width: 34px; height: 34px; }
+  .brand span { font-size: 21px; }
+  .chapters { flex-direction: column; align-items: flex-end; gap: 6px; font-size: 14px; }
+  .chapters a { padding: 6px 12px; }
+  .chapters a:not(.cta):not(.org) { display: none; }
+  .chapters a.org { border: 1.5px solid rgba(251,246,236,.75); background: rgba(18,48,45,.5); padding: 4px 11px; }
+}
 a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline-offset: 3px; }
 
 /* photo scenes: the photo always covers the screen; the live phone screen is placed in % of the photo, so it stays lined up */
@@ -52,7 +62,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 #visit .cover { --r: 1.6258; --fx: 50%; --fy: 50%; }
 #plan .cover { --r: 1.8333; --fx: 50%; --fy: 50%; }
 @media (orientation: portrait) {
-  #visit .cover { --fx: 51.3%; --fy: 58%; width: calc(100svh * var(--r) * 1.2); height: calc(100svh * 1.2); }
+  #visit .cover { --fx: 51.3%; --fy: 55%; width: calc(100svh * var(--r) * 1.2); height: calc(100svh * 1.2); }
   .lead .hint { display: none; }
   .lead h1 { font-size: clamp(26px, 7.4vw, 40px); }
   #plan .cover { --fx: 49.7%; --fy: 47.5%; width: calc(100svh * var(--r) * 1.3); height: calc(100svh * 1.3); }
@@ -191,7 +201,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
   <nav class="chapters" aria-label="Chapters">
     <a href="#visit" data-go="visit">The visit</a>
     <a href="#plan" data-go="plan">The plan</a>
-    <a href="#organizations" data-go="organizations">For organizations</a>
+    <a class="org" href="#organizations" data-go="organizations">For organizations</a>
     <a class="cta" href="#join" data-go="join">Join the waiting list</a>
   </nav>
 </header>
