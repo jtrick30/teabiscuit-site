@@ -64,8 +64,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 #visit .design { height: 520px; } #plan .design { height: 527px; }
 .island { position: absolute; top: 10px; left: 50%; width: 64px; height: 18px; margin-left: -32px; border-radius: 10px; background: #14100E; z-index: 2; }
 .notch { position: absolute; top: -1px; left: 50%; width: 126px; height: 20px; margin-left: -63px; border-radius: 0 0 13px 13px; background: #14100E; z-index: 2; }
-.st { position: absolute; inset: 0; padding: 44px 16px 16px; display: none; flex-direction: column; align-items: center; text-align: center; gap: 9px; }
-.phone1[data-state="1"] .s1, .phone1[data-state="2"] .s2, .phone1[data-state="3"] .s3 { display: flex; }
+.st { position: absolute; inset: 0; padding: 44px 16px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 9px; opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility 0s linear .7s; }
+.phone1[data-state="1"] .s1, .phone1[data-state="3"] .s3 { opacity: 1; visibility: visible; transition: opacity .7s ease .15s, visibility 0s; }
 .hello { font-family: var(--display); font-variation-settings: "SOFT" 100; font-weight: 600; font-size: 22px; line-height: 1.15; }
 .when { color: var(--grey); font-size: 13px; }
 .grow { flex: 1; display: grid; place-items: center; width: 100%; }
@@ -99,6 +99,15 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 .act { font: inherit; font-size: 11.5px; font-weight: 700; color: #fff; background: var(--teal); border: 0; border-radius: 999px; padding: 6px 10px; cursor: pointer; white-space: nowrap; }
 .act.is-done { background: #fff; color: var(--green); box-shadow: inset 0 0 0 1.5px var(--green); cursor: default; }
 .did { display: grid; gap: 3px; font-size: 12px; color: var(--tea); line-height: 1.3; }
+.detail { gap: 7px; }
+.detail .hello { font-size: 18px; }
+.backlink { font: inherit; font-size: 12px; font-weight: 700; color: var(--teal); background: none; border: 0; padding: 0; text-align: left; cursor: pointer; justify-self: start; }
+.why { font-size: 12px; line-height: 1.35; color: var(--tea); }
+.prov { display: grid; gap: 3px; background: #fff; border: 1.5px solid var(--line); border-radius: 11px; padding: 9px 10px; font-size: 12px; line-height: 1.35; }
+.prov strong { font-size: 13.5px; } .prov .tel { font-weight: 700; color: var(--teal); font-size: 13.5px; }
+.near { justify-self: start; font-size: 10.5px; font-weight: 700; background: var(--biscuit); border-radius: 999px; padding: 1px 8px; }
+.verified { font-size: 11px; color: var(--grey); }
+.detail .next { margin-top: 2px; }
 .ready { width: 96px; height: 96px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; }
 .ready svg { width: 52px; height: 52px; }
 .moreline { font-size: 12px; color: var(--grey); text-align: center; }
@@ -157,6 +166,8 @@ button.send[disabled] { opacity: .6; cursor: default; }
 .fine summary { cursor: pointer; font-weight: 600; }
 .msg { font-weight: 600; } .msg.err { color: var(--attn); } .msg.ok { color: var(--green); }
 .dark .msg.ok { color: var(--biscuit); } .dark .msg.err { color: #FFC9BD; }
+.thanks { margin: 0; padding: 16px 18px; border-radius: 12px; background: #E6F0E7; color: var(--green); font-weight: 700; font-size: 19px; }
+.dark .thanks { background: var(--cream); color: var(--teal-deep); }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .foot { font-size: 14.5px; color: var(--grey); gap: 4px; }
 .foot a { color: inherit; }
@@ -200,13 +211,6 @@ button.send[disabled] { opacity: .6; cursor: default; }
           <div class="big">Record the visit</div>
           <div class="small">Tea Biscuit will remember the plan for you and your loved ones.</div>
         </div>
-        <div class="st s2">
-          <div class="livedot"><i></i>Recording</div>
-          <div class="timer" data-timer>0:00</div>
-          <div class="grow"><div class="bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
-          <div class="big">Listening to the visit</div>
-          <div class="small">Sped up for this example.</div>
-        </div>
         <div class="st s3">
           <div class="hello">Your plan is ready</div>
           <div class="when">Dr. Patel's visit, today</div>
@@ -237,15 +241,31 @@ button.send[disabled] { opacity: .6; cursor: default; }
         <div class="design">
           <div class="notch"></div>
           <div class="appbar"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#17443F"/><circle cx="50" cy="50" r="39" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="2"/><rect x="70" y="41.4" width="19.500" height="7.2" rx="3.6" fill="#FBF6EC" transform="rotate(-38 50 45)"/><circle cx="50" cy="45" r="26" fill="#FBF6EC"/><circle cx="50" cy="45" r="19.6" fill="#A46A3A"/><path d="M36.500 42a14.500 14.500 0 0 1 11-10.500" fill="none" stroke="#C99466" stroke-width="3" stroke-linecap="round"/><g transform="rotate(-12 43.5 73.5)"><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#E9CF9F"/><circle cx="29.36" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="29.36" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="27.66" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="35.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="43.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="51.50" cy="73.5" r="1.6" fill="#143C38"/></g></svg>Tea Biscuit</div>
-          <div class="plan">
+          <div class="plan" data-list>
             <div class="hello">Margaret's plan</div>
             <div class="when">Dr. Patel's visit, today</div>
             <div class="sec">Next steps</div>
-            <div class="todo"><div><strong>Book an eye exam</strong><span>It has been more than two years.</span></div><button type="button" class="act" data-done="Called">Call</button></div>
-            <div class="todo"><div><strong>Get fasting blood work</strong><span>In the next two weeks.</span></div><button type="button" class="act" data-done="Booked">Book online</button></div>
-            <div class="todo"><div><strong>Book a hearing test</strong><span>Before talking about hearing aids.</span></div><button type="button" class="act" data-done="Called">Call</button></div>
+            <div class="todo"><div><strong>Book an eye exam</strong><span>It has been more than two years.</span></div><button type="button" class="act" data-task="eye">Call</button></div>
+            <div class="todo"><div><strong>Get fasting blood work</strong><span>In the next two weeks.</span></div><button type="button" class="act" data-task="blood">Book online</button></div>
+            <div class="todo"><div><strong>Book a hearing test</strong><span>Before talking about hearing aids.</span></div><button type="button" class="act" data-task="hearing">Call</button></div>
             <div class="sec">Done at the visit</div>
             <div class="did"><span>✓ Flu shot given</span><span>✓ Blood pressure checked. New pill started.</span><span>✓ Memory clinic referral sent. They will call you.</span></div>
+          </div>
+          <div class="plan detail" data-detail hidden>
+            <button type="button" class="backlink" data-back>‹ Margaret's plan</button>
+            <div class="hello" data-d="title"></div>
+            <div class="why"><b>Why:</b> <span data-d="why"></span></div>
+            <div class="prov">
+              <span class="near">Closest to Margaret</span>
+              <strong data-d="name"></strong>
+              <span data-d="addr"></span>
+              <span class="tel" data-d="tel"></span>
+              <span data-d="hours"></span>
+              <span data-d="extra"></span>
+            </div>
+            <div class="verified">Checked by a family physician. Last checked Nov 10.</div>
+            <button type="button" class="next" data-mark></button>
+            <div class="small" style="text-align:center">Example details, not a real clinic.</div>
           </div>
         </div>
       </div>
@@ -328,13 +348,13 @@ button.send[disabled] { opacity: .6; cursor: default; }
       <label>Email <input type="email" name="email" autocomplete="email" required maxlength="254"></label>
     </div>
     <label data-org hidden>Organization name <input type="text" name="organization_name" autocomplete="organization" maxlength="160"></label>
-    <label>First 3 characters of your postal code <small>Optional. We will let you know when Tea Biscuit is available in your area.</small> <input type="text" name="fsa" maxlength="3" autocomplete="off" style="max-width:9em;text-transform:uppercase"></label>
+    <label data-fsa>First 3 characters of your postal code <small>Optional. We will let you know when Tea Biscuit is available in your area.</small> <input type="text" name="fsa" maxlength="3" autocomplete="off" style="max-width:9em;text-transform:uppercase"></label>
     <label class="hp" aria-hidden="true">Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
     <label class="consent"><input type="checkbox" name="consent" required> <span>Yes, Tea Biscuit can email me about the waiting list and early testing. I can ask to be removed at any time.</span></label>
     <button class="send" type="submit">Join the waiting list</button>
     <p class="msg" role="status" aria-live="polite" hidden></p>
     <p class="fine">Please do not send health information. We never sell your data. Your details are stored in Canada.</p>
-    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and we use it only to contact you about Tea Biscuit. It is kept on servers in Canada, run for us by Supabase, a hosting company based in the United States. We never sell or share it. To see, change or remove your details, email jason@piezoelectric.ai.</span></details>
+    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and we use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. To see, change or remove your details, email jason@piezoelectric.ai.</span></details>
   </form>
 </template>
 
@@ -360,20 +380,31 @@ button.send[disabled] { opacity: .6; cursor: default; }
   }
   window.addEventListener('resize', fit); fit();
 
-  // record screen: ready, recording, plan
-  var ph = document.querySelector('.phone1'), t, sec = 0, tm = ph.querySelector('[data-timer]');
-  function set(s) { ph.setAttribute('data-state', s); }
-  var done;
-  ph.querySelector('[data-rec]').addEventListener('click', function () {
-    set('2'); sec = 0; tm.textContent = '0:00'; clearInterval(t); clearTimeout(done);
-    t = setInterval(function () { sec += 7; tm.textContent = Math.floor(sec / 60) + ':' + (sec % 60 < 10 ? '0' : '') + (sec % 60); }, 110);
-    done = setTimeout(function () { clearInterval(t); set('3'); }, 1700);
-  });
-  ph.querySelector('[data-again]').addEventListener('click', function () { set('1'); });
+  // record screen: the red button fades to the finished plan
+  var ph = document.querySelector('.phone1');
+  ph.querySelector('[data-rec]').addEventListener('click', function () { ph.setAttribute('data-state', '3'); });
+  ph.querySelector('[data-again]').addEventListener('click', function () { ph.setAttribute('data-state', '1'); });
 
-  // plan phone: pressing an action marks the step done
-  document.querySelectorAll('.act').forEach(function (b) {
-    b.addEventListener('click', function () { b.classList.add('is-done'); b.textContent = '✓ ' + b.getAttribute('data-done'); b.disabled = true; });
+  // plan phone: an action opens example details for that step; "mark" returns to the list with the step done
+  var TASKS = {
+    eye: { title: 'Book an eye exam', why: 'It has been more than two years. Eye exams are covered at her age.', name: 'Example Eye Care', addr: '100 Example Street, Ottawa', tel: 'Call 613-555-0142', hours: 'Mon to Fri, 9 am to 5 pm', extra: 'Bring her health card.', mark: 'I called and booked', done: 'Booked' },
+    blood: { title: 'Get fasting blood work', why: 'To check cholesterol and blood sugar before the next visit. Follow the fasting rules on the lab form.', name: 'Example Community Lab', addr: '200 Example Avenue, Ottawa', tel: 'Book a time online', hours: 'Mon to Sat, 7 am to 3 pm', extra: 'Walk-in: yes. Bring the lab form.', mark: 'I booked a time', done: 'Booked' },
+    hearing: { title: 'Book a hearing test', why: 'Trouble following conversations. The test shows how much her hearing has changed, before talking about hearing aids.', name: 'Example Hearing Clinic', addr: '300 Example Road, Ottawa', tel: 'Call 613-555-0178', hours: 'Mon to Thu, 9 am to 4 pm', extra: 'No referral needed.', mark: 'I called and booked', done: 'Booked' }
+  };
+  var p2 = document.querySelector('.phone2'), listEl = p2.querySelector('[data-list]'), det = p2.querySelector('[data-detail]'), cur;
+  p2.querySelectorAll('.act').forEach(function (b) {
+    b.addEventListener('click', function () {
+      cur = b; var t = TASKS[b.getAttribute('data-task')];
+      ['title', 'why', 'name', 'addr', 'tel', 'hours', 'extra'].forEach(function (k) { det.querySelector('[data-d=' + k + ']').textContent = t[k]; });
+      det.querySelector('[data-mark]').textContent = t.mark;
+      listEl.hidden = true; det.hidden = false;
+    });
+  });
+  det.querySelector('[data-back]').addEventListener('click', function () { det.hidden = true; listEl.hidden = false; });
+  det.querySelector('[data-mark]').addEventListener('click', function () {
+    var t = TASKS[cur.getAttribute('data-task')];
+    cur.classList.add('is-done'); cur.textContent = '✓ ' + t.done; cur.disabled = true;
+    det.hidden = true; listEl.hidden = false;
   });
 
   // waiting list forms
@@ -383,8 +414,10 @@ button.send[disabled] { opacity: .6; cursor: default; }
     slot.appendChild(document.getElementById('tpl-form').content.cloneNode(true));
     var form = slot.querySelector('form'), msg = slot.querySelector('.msg'), btn = slot.querySelector('button.send');
     slot.querySelector('[data-org]').hidden = role !== 'organization';
+    slot.querySelector('[data-fsa]').hidden = role === 'organization';
     if (role === 'organization') btn.textContent = 'Ask for a call';
     function say(text, cls) { msg.hidden = false; msg.className = 'msg ' + cls; msg.textContent = text; }
+    function thanks(text) { form.hidden = true; var p = document.createElement('p'); p.className = 'thanks'; p.setAttribute('role', 'status'); p.textContent = text; slot.appendChild(p); }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var f = form.elements;
@@ -399,8 +432,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
       fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY, Prefer: 'return=minimal' }, body: JSON.stringify(body) })
         .then(function (r) {
           if (!r.ok) throw new Error(r.status);
-          form.querySelectorAll('input, button').forEach(function (el) { el.disabled = true; });
-          say('Thank you. You are on the list. We will be in touch.', 'ok');
+          thanks(role === 'organization' ? 'Thank you. We will email you to set up a call.' : 'Thank you. You are on the list. We will be in touch.');
         })
         .catch(function () { btn.disabled = false; say('That did not go through. Please try again, or email jason@piezoelectric.ai.', 'err'); });
     });
