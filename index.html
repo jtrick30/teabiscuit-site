@@ -48,7 +48,10 @@ h1, h2 { font-family: var(--display); font-variation-settings: "SOFT" 100; font-
 .chapters { display: flex; align-items: center; gap: 4px; font-size: 16px; font-weight: 600; }
 .chapters a { color: inherit; text-decoration: none; padding: 7px 12px; border-radius: 999px; }
 .chapters a:hover { background: rgba(251,246,236,.16); }
+.chapters a.cta, .chapters a.org { border: 1.5px solid var(--cream); min-width: 176px; text-align: center; }
 .chapters a.cta { background: var(--cream); color: var(--teal-deep); }
+.chapters a.org { margin-left: 6px; }
+.chapters a.org:hover { background: rgba(251,246,236,.16); }
 .chapters a, .brand .bn { white-space: nowrap; }
 @media (max-width: 720px) {
   .bar { align-items: flex-start; padding-top: 12px; }
@@ -56,10 +59,11 @@ h1, h2 { font-family: var(--display); font-variation-settings: "SOFT" 100; font-
   .brand .mark { width: 34px; height: 34px; }
   .brand .bn { font-size: 21px; }
   .brand .tg { font-size: 10.5px; white-space: normal; max-width: 128px; }
-  .chapters { flex-direction: column; align-items: flex-end; gap: 6px; font-size: 14px; }
-  .chapters a { padding: 6px 12px; }
+  .chapters { flex-direction: column; align-items: stretch; gap: 6px; font-size: 14px; }
+  .chapters a { padding: 5px 12px; }
+  .chapters a.cta, .chapters a.org { min-width: 0; margin-left: 0; }
   .chapters a:not(.cta):not(.org) { display: none; }
-  .chapters a.org { border: 1.5px solid rgba(251,246,236,.75); background: rgba(18,48,45,.5); padding: 4px 11px; }
+  .chapters a.org { background: rgba(18,48,45,.5); }
 }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline-offset: 3px; }
 
