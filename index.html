@@ -357,7 +357,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
 
     <footer class="card foot">
       <span>Tea Biscuit is opening to its first families and organizations soon. It does not give medical advice and does not replace your doctor. The people and details shown are examples.</span>
-      <span>Ottawa, Ontario. A project by <a href="https://piezoelectric.ai/">Jason Trickovic, MD</a>. Contact: <a href="mailto:jason@piezoelectric.ai">jason@piezoelectric.ai</a></span>
+      <span>Ottawa, Ontario. A project by <a href="https://piezoelectric.ai/">Jason Trickovic, MD</a>. Contact: <a href="mailto:jason@teabiscuit.ai">jason@teabiscuit.ai</a></span>
     </footer>
   </div>
 </section>
@@ -390,7 +390,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
     <button class="send" type="submit">Join the waiting list</button>
     <p class="msg" role="status" aria-live="polite" hidden></p>
     <p class="fine">Please do not send health information. We never sell your data. Your details are stored in Canada.</p>
-    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and we use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. To see, change or remove your details, email jason@piezoelectric.ai.</span></details>
+    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and we use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. To see, change or remove your details, email jason@teabiscuit.ai.</span></details>
   </form>
 </template>
 
@@ -477,7 +477,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
           if (!r.ok) throw new Error(r.status);
           thanks(role === 'organization' ? 'Thank you. We will email you to set up a call.' : 'Thank you. You are on the list. We will be in touch.');
         })
-        .catch(function () { btn.disabled = false; say('That did not go through. Please try again, or email jason@piezoelectric.ai.', 'err'); });
+        .catch(function () { btn.disabled = false; say('That did not go through. Please try again, or email jason@teabiscuit.ai.', 'err'); });
     });
   });
 })();
