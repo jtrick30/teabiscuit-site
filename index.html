@@ -299,9 +299,8 @@ button.send[disabled] { opacity: .6; cursor: default; }
               <span data-d="hours"></span>
               <span data-d="extra"></span>
             </div>
-            <div class="verified">Checked by a family physician. Last checked Nov 10.</div>
+            <div class="verified">Checked by a family physician. Up to date as of <span data-yday>yesterday</span>.</div>
             <button type="button" class="next" data-mark></button>
-            <div class="small" style="text-align:center">Example only.</div>
           </div>
         </div>
       </div>
@@ -433,6 +432,8 @@ button.send[disabled] { opacity: .6; cursor: default; }
     blood: { tag: "Margaret's preferred lab", title: 'Get fasting blood work', why: 'To check cholesterol and blood sugar before the next visit. Follow the fasting rules on the lab form.', name: 'Saucer Street Community Lab', addr: '40 Saucer Street, Ottawa', tel: 'Book a time online', hours: 'Mon to Sat, 7 am to 3 pm', extra: 'Walk-in: yes. Bring the lab form.', mark: 'I booked a time', done: 'Booked' },
     hearing: { tag: 'Closest to Margaret', title: 'Book a hearing test', why: 'Trouble following conversations. The test shows how much her hearing has changed, before talking about hearing aids.', name: 'Shortbread Hearing Clinic', addr: '7 Shortbread Road, Ottawa', tel: 'Call 613-555-0178', hours: 'Mon to Thu, 9 am to 4 pm', extra: 'No referral needed.', mark: 'I called and booked', done: 'Booked' }
   };
+  // the "up to date" line always shows the day before today
+  (function () { var d = new Date(); d.setDate(d.getDate() - 1); var t; try { t = d.toLocaleDateString('en-CA', { month: 'long', day: 'numeric' }); } catch (e) { t = 'yesterday'; } document.querySelectorAll('[data-yday]').forEach(function (el) { el.textContent = t; }); })();
   var p2 = document.querySelector('.phone2'), listEl = p2.querySelector('[data-list]'), det = p2.querySelector('[data-detail]'), cur;
   p2.querySelectorAll('.act').forEach(function (b) {
     b.addEventListener('click', function () {
