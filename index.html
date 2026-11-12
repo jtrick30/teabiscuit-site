@@ -292,7 +292,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
             <div class="hello" data-d="title"></div>
             <div class="why"><b>Why:</b> <span data-d="why"></span></div>
             <div class="prov">
-              <span class="near">Closest to Margaret</span>
+              <span class="near" data-d="tag">Closest to Margaret</span>
               <strong data-d="name"></strong>
               <span data-d="addr"></span>
               <span class="tel" data-d="tel"></span>
@@ -429,15 +429,15 @@ button.send[disabled] { opacity: .6; cursor: default; }
 
   // plan phone: an action opens example details for that step; "mark" returns to the list with the step done
   var TASKS = {
-    eye: { title: 'Book an eye exam', why: 'It has been more than two years. Eye exams are covered at her age.', name: 'Kettle Lane Eye Care', addr: '12 Kettle Lane, Ottawa', tel: 'Call 613-555-0142', hours: 'Mon to Fri, 9 am to 5 pm', extra: 'Bring her health card.', mark: 'I called and booked', done: 'Booked' },
-    blood: { title: 'Get fasting blood work', why: 'To check cholesterol and blood sugar before the next visit. Follow the fasting rules on the lab form.', name: 'Saucer Street Community Lab', addr: '40 Saucer Street, Ottawa', tel: 'Book a time online', hours: 'Mon to Sat, 7 am to 3 pm', extra: 'Walk-in: yes. Bring the lab form.', mark: 'I booked a time', done: 'Booked' },
-    hearing: { title: 'Book a hearing test', why: 'Trouble following conversations. The test shows how much her hearing has changed, before talking about hearing aids.', name: 'Shortbread Hearing Clinic', addr: '7 Shortbread Road, Ottawa', tel: 'Call 613-555-0178', hours: 'Mon to Thu, 9 am to 4 pm', extra: 'No referral needed.', mark: 'I called and booked', done: 'Booked' }
+    eye: { tag: 'Closest to Margaret', title: 'Book an eye exam', why: 'It has been more than two years. Eye exams are covered at her age.', name: 'Kettle Lane Eye Care', addr: '12 Kettle Lane, Ottawa', tel: 'Call 613-555-0142', hours: 'Mon to Fri, 9 am to 5 pm', extra: 'Bring her health card.', mark: 'I called and booked', done: 'Booked' },
+    blood: { tag: "Margaret's preferred lab", title: 'Get fasting blood work', why: 'To check cholesterol and blood sugar before the next visit. Follow the fasting rules on the lab form.', name: 'Saucer Street Community Lab', addr: '40 Saucer Street, Ottawa', tel: 'Book a time online', hours: 'Mon to Sat, 7 am to 3 pm', extra: 'Walk-in: yes. Bring the lab form.', mark: 'I booked a time', done: 'Booked' },
+    hearing: { tag: 'Closest to Margaret', title: 'Book a hearing test', why: 'Trouble following conversations. The test shows how much her hearing has changed, before talking about hearing aids.', name: 'Shortbread Hearing Clinic', addr: '7 Shortbread Road, Ottawa', tel: 'Call 613-555-0178', hours: 'Mon to Thu, 9 am to 4 pm', extra: 'No referral needed.', mark: 'I called and booked', done: 'Booked' }
   };
   var p2 = document.querySelector('.phone2'), listEl = p2.querySelector('[data-list]'), det = p2.querySelector('[data-detail]'), cur;
   p2.querySelectorAll('.act').forEach(function (b) {
     b.addEventListener('click', function () {
       cur = b; var t = TASKS[b.getAttribute('data-task')];
-      ['title', 'why', 'name', 'addr', 'tel', 'hours', 'extra'].forEach(function (k) { det.querySelector('[data-d=' + k + ']').textContent = t[k]; });
+      ['tag', 'title', 'why', 'name', 'addr', 'tel', 'hours', 'extra'].forEach(function (k) { det.querySelector('[data-d=' + k + ']').textContent = t[k]; });
       det.querySelector('[data-mark]').textContent = t.mark;
       listEl.hidden = true; det.hidden = false;
     });
