@@ -66,10 +66,10 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 #plan .cover { --r: 1.8333; --fx: 50%; --fy: 50%; }
 @media (orientation: portrait) {
   #visit .cover { --fx: 51.3%; --fy: 55%; width: calc(100svh * var(--r) * 1.12); height: calc(100svh * 1.12); }
-  .lead .who { font-size: 11px; letter-spacing: .05em; white-space: nowrap; margin-bottom: 4px; }
-  .lead .sub { display: none; }
-  .lead h1 { font-size: clamp(24px, 6.6vw, 36px); }
-  .lead { bottom: 12px; }
+  #visit .lead .who { font-size: 11px; letter-spacing: .05em; white-space: nowrap; margin-bottom: 4px; }
+  #visit .lead .sub { display: none; }
+  #visit .lead h1 { font-size: clamp(24px, 6.6vw, 36px); }
+  #visit .lead { bottom: 12px; }
   #plan .cover { --fx: 49.7%; --fy: 47.5%; width: calc(100svh * var(--r) * 1.3); height: calc(100svh * 1.3); }
 }
 .live { position: absolute; overflow: hidden; background: #F7F0E1; }
@@ -138,7 +138,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 .lead a { pointer-events: auto; color: var(--cream); font-weight: 600; text-decoration: none; border: 2px solid rgba(251,246,236,.6); border-radius: 999px; padding: 8px 16px; white-space: nowrap; }
 .lead a:hover { background: rgba(251,246,236,.16); }
 @media (max-width: 720px) { .lead { flex-direction: column; align-items: flex-start; gap: 10px; } }
-@media (orientation: portrait) and (max-height: 680px) { .lead { gap: 7px; } .lead h1 { font-size: 24px; } .lead a { padding: 5px 14px; font-size: 16px; } }
+@media (orientation: portrait) and (max-height: 680px) { #visit .lead { gap: 7px; } #visit .lead h1 { font-size: 23px; } #visit .lead a { padding: 5px 14px; font-size: 16px; } }
 
 /* chapter 2: still photo, scrolling cards */
 .story { position: relative; }
