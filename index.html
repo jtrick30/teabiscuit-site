@@ -80,7 +80,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
   #visit .lead .sub { display: none; }
   #visit .lead h1 { font-size: clamp(24px, 6.6vw, 36px); }
   #visit .lead { bottom: 12px; }
-  #plan .cover { --fx: 49.7%; --fy: 47.5%; width: calc(100svh * var(--r) * 1.3); height: calc(100svh * 1.3); }
+  #plan .above { font-size: 11px; }
+  #plan .cover { --fx: 49.7%; --fy: 42%; width: calc(100svh * var(--r) * 1.3); height: calc(100svh * 1.3); }
 }
 .live { position: absolute; overflow: hidden; background: #F7F0E1; }
 #visit .live { left: 43.42%; top: 23.85%; width: 15.84%; height: 54.3%; border-radius: 11.4% / 5.4%; }
@@ -145,6 +146,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 .lead .sub { font-size: 18px; line-height: 1.45; max-width: 31em; margin: 10px 0 0; color: var(--mist); }
 .lead .try { color: var(--biscuit); font-weight: 600; white-space: nowrap; }
 .forwho { position: absolute; z-index: 3; left: 51.34%; top: 23.85%; transform: translate(-50%, calc(-100% - 14px)); margin: 0; white-space: nowrap; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cream); background: rgba(18,48,45,.84); padding: 7px 16px; border-radius: 999px; }
+.above { position: absolute; z-index: 2; left: 49.7%; top: 16.6%; transform: translate(-50%, calc(-100% - 7px)); margin: 0; white-space: nowrap; font-size: 12.5px; font-weight: 600; letter-spacing: .04em; color: rgba(251,246,236,.82); text-shadow: 0 1px 6px rgba(0,0,0,.55); }
 .whose { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); }
 .lead a { pointer-events: auto; color: var(--cream); font-weight: 600; text-decoration: none; border: 2px solid rgba(251,246,236,.6); border-radius: 999px; padding: 8px 16px; white-space: nowrap; }
 .lead a:hover { background: rgba(251,246,236,.16); }
@@ -244,9 +246,9 @@ button.send[disabled] { opacity: .6; cursor: default; }
         </div>
         <div class="st s3">
           <div class="hello">Your plan is ready</div>
-          <div class="when">Dr. Patel's visit, today</div>
           <div class="grow"><div class="ready"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.500 4.500L19 7.500"/></svg></div></div>
-          <div class="big">7 things in the plan</div>
+          <div class="when">Dr. Patel's visit</div>
+          <div class="big">6 things in the plan</div>
           <div class="small">Tea Biscuit remembered it for you and your loved ones.</div>
           <button class="next" type="button" data-go="plan" style="align-self:stretch">See the plan ↓</button>
           <button class="again" type="button" data-again>Start again</button>
@@ -268,20 +270,20 @@ button.send[disabled] { opacity: .6; cursor: default; }
   <div class="scene">
     <div class="cover">
       <img src="images/plan.jpg" width="1408" height="768" alt="At a kitchen counter, a son holds a phone showing his mother's plan, beside a kettle, two mugs and a plate of tea biscuits.">
+      <p class="above">Her son's phone · at home</p>
       <div class="live phone2" aria-label="Example of the plan, as the family sees it">
         <div class="design">
           <div class="notch"></div>
           <div class="appbar"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#17443F"/><circle cx="50" cy="50" r="39" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="2"/><rect x="70" y="41.4" width="19.500" height="7.2" rx="3.6" fill="#FBF6EC" transform="rotate(-38 50 45)"/><circle cx="50" cy="45" r="26" fill="#FBF6EC"/><circle cx="50" cy="45" r="19.6" fill="#A46A3A"/><path d="M36.500 42a14.500 14.500 0 0 1 11-10.500" fill="none" stroke="#C99466" stroke-width="3" stroke-linecap="round"/><g transform="rotate(-12 43.5 73.5)"><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="29.36" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="34.07" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="38.79" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="43.50" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="48.21" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="52.93" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="63.59" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="57.64" cy="83.41" r="2.17" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="65.62" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="70.88" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="76.12" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="27.66" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><circle cx="59.34" cy="81.38" r="2.42" fill="#143C38" stroke="#143C38" stroke-width="3.8" stroke-linejoin="round"/><rect x="27" y="63" width="33" height="21" rx="2.12" fill="#E9CF9F"/><circle cx="29.36" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="29.36" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="34.07" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="38.79" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="43.50" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="48.21" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="52.93" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="63.59" r="2.17" fill="#E9CF9F"/><circle cx="57.64" cy="83.41" r="2.17" fill="#E9CF9F"/><circle cx="27.66" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="65.62" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="70.88" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="76.12" r="2.42" fill="#E9CF9F"/><circle cx="27.66" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="59.34" cy="81.38" r="2.42" fill="#E9CF9F"/><circle cx="35.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="43.50" cy="73.5" r="1.6" fill="#143C38"/><circle cx="51.50" cy="73.5" r="1.6" fill="#143C38"/></g></svg>Tea Biscuit</div>
           <div class="plan" data-list>
-            <div class="whose">Her son's phone · at home</div>
             <div class="hello">Margaret's plan</div>
-            <div class="when">Dr. Patel's visit, today</div>
+            <div class="when">Dr. Patel's visit</div>
             <div class="sec">Next steps</div>
             <div class="todo"><div><strong>Book an eye exam</strong><span>It has been more than two years.</span></div><button type="button" class="act" data-task="eye">Call</button></div>
             <div class="todo"><div><strong>Get fasting blood work</strong><span>In the next two weeks.</span></div><button type="button" class="act" data-task="blood">Book online</button></div>
             <div class="todo"><div><strong>Book a hearing test</strong><span>Before talking about hearing aids.</span></div><button type="button" class="act" data-task="hearing">Call</button></div>
             <div class="sec">Done at the visit</div>
-            <div class="did"><span>✓ Flu shot given</span><span>✓ Blood pressure checked. New pill started.</span><span>✓ Memory clinic referral sent. They will call you.</span></div>
+            <div class="did"><span>✓ Flu shot given</span><span>✓ Blood pressure still elevated. Ramipril 10 mg by mouth, once a day.</span><span>✓ Memory clinic referral sent. They will call you.</span></div>
           </div>
           <div class="plan detail" data-detail hidden>
             <button type="button" class="backlink" data-back>‹ Margaret's plan</button>
