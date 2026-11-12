@@ -49,7 +49,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
 .scene { position: relative; height: 100vh; height: 100svh; min-height: 540px; overflow: hidden; background: #2A211B; }
 .cover { position: absolute; left: 50%; top: 50%; width: max(100vw, calc(100svh * var(--r))); height: max(100svh, calc(100vw / var(--r))); min-height: 540px; min-width: calc(540px * var(--r)); transform: translate(calc(var(--fx) * -1), calc(var(--fy) * -1)); }
 .cover img { display: block; width: 100%; height: 100%; }
-#visit .cover { --r: 1.6017; --fx: 50%; --fy: 50%; }
+#visit .cover { --r: 1.6258; --fx: 50%; --fy: 50%; }
 #plan .cover { --r: 1.8333; --fx: 50%; --fy: 50%; }
 @media (orientation: portrait) {
   #visit .cover { --fx: 51.3%; --fy: 58%; width: calc(100svh * var(--r) * 1.2); height: calc(100svh * 1.2); }
@@ -58,10 +58,10 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--toast); outline
   #plan .cover { --fx: 49.7%; --fy: 47.5%; width: calc(100svh * var(--r) * 1.3); height: calc(100svh * 1.3); }
 }
 .live { position: absolute; overflow: hidden; background: #F7F0E1; }
-#visit .live { left: 43.68%; top: 24.6%; width: 15.2%; height: 53%; border-radius: 10.4% / 4.8%; }
+#visit .live { left: 43.42%; top: 23.85%; width: 15.84%; height: 54.3%; border-radius: 11.4% / 5.4%; }
 #plan .live { left: 42.55%; top: 18.4%; width: 14.3%; height: 57.9%; border-radius: 9.5% / 4.2%; -webkit-mask-image: radial-gradient(ellipse 10.5% 5.6% at 64.5% 100.6%, transparent 97%, #000 100%); mask-image: radial-gradient(ellipse 10.5% 5.6% at 64.5% 100.6%, transparent 97%, #000 100%); }
 .design { position: absolute; left: 0; top: 0; width: 238px; transform-origin: 0 0; color: var(--tea); font-size: 14px; line-height: 1.35; }
-#visit .design { height: 520px; } #plan .design { height: 527px; }
+#visit .design { height: 506px; } #plan .design { height: 527px; }
 .island { position: absolute; top: 10px; left: 50%; width: 64px; height: 18px; margin-left: -32px; border-radius: 10px; background: #14100E; z-index: 2; }
 .notch { position: absolute; top: -1px; left: 50%; width: 126px; height: 20px; margin-left: -63px; border-radius: 0 0 13px 13px; background: #14100E; z-index: 2; }
 .st { position: absolute; inset: 0; padding: 44px 16px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 9px; opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility 0s linear .7s; }
@@ -199,7 +199,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
 <!-- CHAPTER 1: THE VISIT -->
 <section class="scene" id="visit">
   <div class="cover">
-    <img src="images/visit.jpg" width="1307" height="816" alt="An older woman's hand holds a phone across the desk from her family doctor.">
+    <img src="images/visit.jpg" width="1234" height="759" alt="An older woman's hand holds a phone across the desk from her family doctor.">
     <div class="scrim"></div>
     <div class="live phone1" data-state="1" role="group" aria-label="Example of the Tea Biscuit record screen">
       <div class="design">
@@ -265,7 +265,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
             </div>
             <div class="verified">Checked by a family physician. Last checked Nov 10.</div>
             <button type="button" class="next" data-mark></button>
-            <div class="small" style="text-align:center">Example details, not a real clinic.</div>
+            <div class="small" style="text-align:center">Example only.</div>
           </div>
         </div>
       </div>
@@ -387,9 +387,9 @@ button.send[disabled] { opacity: .6; cursor: default; }
 
   // plan phone: an action opens example details for that step; "mark" returns to the list with the step done
   var TASKS = {
-    eye: { title: 'Book an eye exam', why: 'It has been more than two years. Eye exams are covered at her age.', name: 'Example Eye Care', addr: '100 Example Street, Ottawa', tel: 'Call 613-555-0142', hours: 'Mon to Fri, 9 am to 5 pm', extra: 'Bring her health card.', mark: 'I called and booked', done: 'Booked' },
-    blood: { title: 'Get fasting blood work', why: 'To check cholesterol and blood sugar before the next visit. Follow the fasting rules on the lab form.', name: 'Example Community Lab', addr: '200 Example Avenue, Ottawa', tel: 'Book a time online', hours: 'Mon to Sat, 7 am to 3 pm', extra: 'Walk-in: yes. Bring the lab form.', mark: 'I booked a time', done: 'Booked' },
-    hearing: { title: 'Book a hearing test', why: 'Trouble following conversations. The test shows how much her hearing has changed, before talking about hearing aids.', name: 'Example Hearing Clinic', addr: '300 Example Road, Ottawa', tel: 'Call 613-555-0178', hours: 'Mon to Thu, 9 am to 4 pm', extra: 'No referral needed.', mark: 'I called and booked', done: 'Booked' }
+    eye: { title: 'Book an eye exam', why: 'It has been more than two years. Eye exams are covered at her age.', name: 'Kettle Lane Eye Care', addr: '12 Kettle Lane, Ottawa', tel: 'Call 613-555-0142', hours: 'Mon to Fri, 9 am to 5 pm', extra: 'Bring her health card.', mark: 'I called and booked', done: 'Booked' },
+    blood: { title: 'Get fasting blood work', why: 'To check cholesterol and blood sugar before the next visit. Follow the fasting rules on the lab form.', name: 'Saucer Street Community Lab', addr: '40 Saucer Street, Ottawa', tel: 'Book a time online', hours: 'Mon to Sat, 7 am to 3 pm', extra: 'Walk-in: yes. Bring the lab form.', mark: 'I booked a time', done: 'Booked' },
+    hearing: { title: 'Book a hearing test', why: 'Trouble following conversations. The test shows how much her hearing has changed, before talking about hearing aids.', name: 'Shortbread Hearing Clinic', addr: '7 Shortbread Road, Ottawa', tel: 'Call 613-555-0178', hours: 'Mon to Thu, 9 am to 4 pm', extra: 'No referral needed.', mark: 'I called and booked', done: 'Booked' }
   };
   var p2 = document.querySelector('.phone2'), listEl = p2.querySelector('[data-list]'), det = p2.querySelector('[data-detail]'), cur;
   p2.querySelectorAll('.act').forEach(function (b) {
