@@ -24,6 +24,23 @@ HEAD_SITE='''<meta name="robots" content="noindex, nofollow">
 <title>Tea Biscuit: the doctor's plan done, with time for tea</title>'''
 HEAD_MOCK='<title>Tea Biscuit website mock-up</title>'
 
+VISIT_SITE=r'''
+  // anonymous visit counter: one row per browser per day. No name, email or IP address is stored.
+  (function () {
+    try {
+      if (navigator.webdriver || /bot|crawl|spider|headless|preview/i.test(navigator.userAgent)) return;
+      var d = new Date(), today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+      if (localStorage.getItem('tb_last') === today) return;
+      var isNew = !localStorage.getItem('tb_seen');
+      var ref = null;
+      try { var h = new URL(document.referrer).hostname.toLowerCase(); if (h && h !== location.hostname && /^[a-z0-9.-]{1,80}$/.test(h)) ref = h; } catch (e) {}
+      localStorage.setItem('tb_last', today); localStorage.setItem('tb_seen', '1');
+      fetch(API.replace('/waitlist', '/site_visits'), { method: 'POST', keepalive: true,
+        headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY, Prefer: 'return=minimal' },
+        body: JSON.stringify({ is_new: isNew, source: SRC, referrer: ref }) }).catch(function () {});
+    } catch (e) {}
+  })();
+'''
 SEND_SITE='''      btn.disabled = true; say('Sending…', '');
       var body = { email: email, first_name: f.first_name.value.trim() || null, role: role, fsa: fsa || null, consent: true,
                    organization_name: role === 'organization' ? (f.organization_name.value.trim() || null) : null };
@@ -415,7 +432,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
     <button class="send" type="submit">Join the waiting list</button>
     <p class="msg" role="status" aria-live="polite" hidden></p>
     <p class="fine">Please do not send health information. We never sell your data. Your details are stored in Canada.</p>
-    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and which link brought you to this page. We use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. To see, change or remove your details, email jason@teabiscuit.ai.</span></details>
+    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and which link brought you to this page. We use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. We also count visits to this page, without storing who you are. To see, change or remove your details, email jason@teabiscuit.ai.</span></details>
   </form>
 </template>
 
@@ -432,7 +449,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
       return v || null;
     } catch (e) { return null; }
   })();
-
+__VISIT__
   // chapter links scroll inside the page
   function go(id) { var el = document.getElementById(id); if (el) el.scrollIntoView({ block: 'start' }); }
   document.addEventListener('click', function (e) {
@@ -515,6 +532,7 @@ __SEND__
 def build(kind):
     s=PAGE.replace('__HEAD__',HEAD_SITE if kind=='site' else HEAD_MOCK).replace('__MARK__',MARK).replace('__KEY__',KEY if kind=='site' else 'mock')
     s=s.replace('__SEND__',SEND_SITE if kind=='site' else SEND_MOCK)
+    s=s.replace('__VISIT__',VISIT_SITE if kind=='site' else '')
     return s
 open(os.path.join(ROOT,'index.html'),'w').write(build('site'))
 open(os.path.join(OUT,'mock','index.html'),'w').write(build('mock'))
