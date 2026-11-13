@@ -27,6 +27,7 @@ HEAD_MOCK='<title>Tea Biscuit website mock-up</title>'
 SEND_SITE='''      btn.disabled = true; say('Sending…', '');
       var body = { email: email, first_name: f.first_name.value.trim() || null, role: role, fsa: fsa || null, consent: true,
                    organization_name: role === 'organization' ? (f.organization_name.value.trim() || null) : null };
+      if (SRC) body.source = SRC;
       fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY, Prefer: 'return=minimal' }, body: JSON.stringify(body) })
         .then(function (r) {
           if (!r.ok) throw new Error(r.status);
@@ -414,7 +415,7 @@ button.send[disabled] { opacity: .6; cursor: default; }
     <button class="send" type="submit">Join the waiting list</button>
     <p class="msg" role="status" aria-live="polite" hidden></p>
     <p class="fine">Please do not send health information. We never sell your data. Your details are stored in Canada.</p>
-    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and we use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. To see, change or remove your details, email jason@teabiscuit.ai.</span></details>
+    <details class="fine"><summary>How we handle your details</summary><span style="display:block;margin-top:6px">We collect only what you type here, and which link brought you to this page. We use it only to contact you about Tea Biscuit. It is kept on servers in Canada. We never sell or share it. To see, change or remove your details, email jason@teabiscuit.ai.</span></details>
   </form>
 </template>
 
@@ -422,6 +423,15 @@ button.send[disabled] { opacity: .6; cursor: default; }
 (function () {
   var API = 'https://phopiztnpobywjmifwqg.supabase.co/rest/v1/waitlist';
   var KEY = '__KEY__'; // public, insert-only key
+
+  // which link brought the visitor here: teabiscuit.ai/?utm_source=linkedin (or ?src=linkedin). Read once, on arrival.
+  var SRC = (function () {
+    try {
+      var q = new URLSearchParams(location.search);
+      var v = (q.get('utm_source') || q.get('src') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+      return v || null;
+    } catch (e) { return null; }
+  })();
 
   // chapter links scroll inside the page
   function go(id) { var el = document.getElementById(id); if (el) el.scrollIntoView({ block: 'start' }); }
