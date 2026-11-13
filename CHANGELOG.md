@@ -3,6 +3,7 @@
 One line per live change.
 
 ## 2026-11-13
+- No change to the live page. Added images/qr-showcase.png, the QR code for the showcase slides (opens teabiscuit.ai/?utm_source=showcase). Requested by Jason 2026-11-13.
 - Anonymous visit counter added: one record per browser per day in the teabiscuit-app database (new or returning, link tag, referring site). No name, email or IP address stored. Privacy note updated. Approved by Jason 2026-11-13.
 - Waiting list now records which tagged link brought a visitor (for example teabiscuit.ai/?utm_source=linkedin). Privacy note updated to say so. Requested by Jason 2026-11-13.
 
